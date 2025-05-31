@@ -1,0 +1,24 @@
+trainPredict = model.predict(trainX)
+testPredict = model.predict(testX)
+
+# Invert predictions due to normalization
+trainPredict = scaler.inverse_transform(trainPredict)
+trainY = scaler.inverse_transform([trainY])
+testPredict = scaler.inverse_transform(testPredict)
+testY = scaler.inverse_transform([testY])
+
+# Prepare to plot the dataset and the predictions
+trainPredictPlot = np.empty_like(dataset)
+trainPredictPlot[:, :] = np.nan
+trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
+
+testPredictPlot = np.empty_like(dataset)
+testPredictPlot[:, :] = np.nan
+testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredict
+
+# Plot baseline and predictions
+plt.figure(figsize=(10, 6))
+plt.plot(scaler.inverse_transform(dataset))
+plt.plot(trainPredictPlot)
+plt.plot(testPredictPlot)
+plt.show()
